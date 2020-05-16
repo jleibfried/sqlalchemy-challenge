@@ -780,32 +780,63 @@ def tobsMethod():
 
 @app.route("/api/v1.0/<start>")
 def startMethod(start):
-    """Take the input data and return the Min, Max, and Average Temperatures"""
-    # counter = 0
-    # tempList = []
-    # for date in tobs:
-    # #    tempList[counter] = temp
-        
-    #     # if date >= tobs["Date"]
-    #     #     counter += 1
-    #     tempList.append(tobs[date])
-    #     return jsonify(tempList)
-    # output = tobs[start]
+    """Take the input data (YYYY-MM-DD) and return the Min, Max, and Average Temperatures from date to most recent data (2017-08-19)"""
 
-    # startdate = strfdate(start)
+    # Variables  
     counter = 0
     tempTotal = 0
+    min = 200 # aimed high for global warming
+    max = 0
+    
     for date in tobs.keys():
         if date >= start:
-            tempTotal += tobs.keys(date)
+            # adding up temps
+            tempTotal += tobs[date]
             counter+=1
-            # return jsonify(date)
+            
+            # finding max temp
+            if tobs[date] > max:
+                max = tobs[date] 
 
-    return jsonify(tempTotal)
+            # finding min temp
+            if tobs[date] < min:
+                min = tobs[date]
+
+            # return jsonify(date)
+    avgTemp = int(tempTotal/counter)
+
+    outputDict = {'Min Temp': min, "Max Temp": max, "Average Temp": avgTemp}
+    return jsonify(outputDict)
         
-    # return jsonify({"error": "Character not found."}), 404
+# return jsonify({"error": "Character not found."}), 404
         
-    
+  
+@app.route("/api/v1.0/<start>/<end>")
+def startEndMethod(start,end):   
+    counter = 0
+    tempTotal = 0
+    min = 200 # aimed high for global warming
+    max = 0
+    # output []
+    for date in tobs.keys():
+        if date >= start and date <= end:
+            # adding up temps
+            tempTotal += tobs[date]
+            counter+=1
+            
+            # finding max temp
+            if tobs[date] > max:
+                max = tobs[date]
+
+            # finding min temp
+            if tobs[date] < min:
+                min = tobs[date]
+
+                
+    avgTemp = int(tempTotal/counter)
+    outputDict = {'Min Temp': min, "Max Temp": max, "Average Temp": avgTemp}
+    return jsonify(outputDict)
+
 
 
 
